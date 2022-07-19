@@ -14,11 +14,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-//        val packName = "com.zhiliaoapp.musically"
-        val packName = "com.dasda.dasdas"
+        val packName = "com.zhiliaoapp.musically"
 
         AppVersionOnGooglePlayUtils(this, packName).getVersionOnGooglePlay {
-            Log.d(TAG, "version is $it")
+                Log.d(TAG, "version is $it")
         }
 
     }
