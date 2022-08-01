@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 class AppVersionOnGooglePlayUtils(
     private val context: Context,
     private val packName: String,
-    private val deflateErrorVersion: String? = "0",
+    private val defaultErrorVersion: String? = "0",
 
     ) {
 
@@ -31,7 +31,7 @@ class AppVersionOnGooglePlayUtils(
         call.enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    versionCallback.invoke(deflateErrorVersion!!)
+                    versionCallback.invoke(defaultErrorVersion!!)
                 }
 
                 @Throws(IOException::class)
@@ -40,14 +40,14 @@ class AppVersionOnGooglePlayUtils(
                         val str = response.body!!.string()
                         val version = parseVersion(str)
 //                        Log.d("MainActivity", "version： $version")
-                        if (version == deflateErrorVersion) {
-                            versionCallback.invoke(deflateErrorVersion!!)
+                        if (version == defaultErrorVersion) {
+                            versionCallback.invoke(defaultErrorVersion!!)
                         } else {
                             versionCallback.invoke(version!!)
                         }
 
                     } else {
-                        versionCallback.invoke(deflateErrorVersion!!)
+                        versionCallback.invoke(defaultErrorVersion!!)
                     }
                 }
             })
@@ -72,7 +72,7 @@ class AppVersionOnGooglePlayUtils(
                 return m2.group(0).replace("\"", "")
             }
         }
-        return deflateErrorVersion
+        return defaultErrorVersion
     }
 
 
