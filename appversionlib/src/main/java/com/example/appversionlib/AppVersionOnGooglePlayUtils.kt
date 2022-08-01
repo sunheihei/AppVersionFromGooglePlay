@@ -46,7 +46,7 @@ class AppVersionOnGooglePlayUtils(
                             versionCallback.invoke(version!!)
                         }
 
-                    }else{
+                    } else {
                         versionCallback.invoke(deflateErrorVersion!!)
                     }
                 }
@@ -54,16 +54,22 @@ class AppVersionOnGooglePlayUtils(
     }
 
     private fun parseVersion(string: String): String? {
-        val pattern1 = "\\[\\[\\[\\\"[0-9]+\\.[0-9]+\\.[0-9]\\\"\\]\\]"
-        val pattern2 = "[0-9]+\\.[0-9]+\\.[0-9]"
+
+//        val pattern1 = "\\[\\[\\[\\\".*\\\"\\]\\]"
+//        val pattern2 = "\\\".*\\\""
+
+//        val pattern1 = "\\[\\[\\[\\\"\\d+\\.\\d+\\.\\d+\\\"\\]\\]"
+        val pattern1 = "\\[\\[\\[\\\"[\\d.]*\"\\]\\]"
+        val pattern2 = "\\\"[\\d.]*\\\""
         val r1 = Pattern.compile(pattern1)
         val m1 = r1.matcher(string)
         if (m1.find()) {
             val str2 = m1.group(0)
+            Log.d("MainActivity", "str")
             val r2 = Pattern.compile(pattern2)
             val m2 = r2.matcher(str2)
             if (m2.find()) {
-                return m2.group(0)
+                return m2.group(0).replace("\"", "")
             }
         }
         return deflateErrorVersion

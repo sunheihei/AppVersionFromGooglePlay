@@ -20,8 +20,9 @@ implementation 'com.github.sunheihei:AppVersionFromGooglePlay:v1.0.0'
 ## KOTLIN:
 
 ```
- val packName = "com.zhiliaoapp.musically"
+ val packName = "com.facebook.orca"
  AppVersionOnGooglePlayUtils(this, packName).getVersionOnGooglePlay {
                 Log.d(TAG, "version is $it")
+                 //version is 370.0.0.14.108
         }
 ```
