@@ -14,7 +14,7 @@ allprojects {
 ```
 
 ```
-implementation 'com.github.sunheihei:AppVersionFromGooglePlay:v1.0.0'
+implementation 'com.github.sunheihei:AppVersionFromGooglePlay:v1.0.1'
 ```
 
 ## KOTLIN:
