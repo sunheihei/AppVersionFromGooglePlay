@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
+//        val packName = "com.facebook.orca"
         val packName = "com.facebook.orca"
 
         AppVersionOnGooglePlayUtils(this, packName).getVersionOnGooglePlay {
