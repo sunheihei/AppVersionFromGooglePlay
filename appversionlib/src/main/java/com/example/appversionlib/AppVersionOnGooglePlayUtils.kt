@@ -12,6 +12,7 @@ import java.util.regex.Pattern
 class AppVersionOnGooglePlayUtils(
     private val context: Context,
     private val packName: String,
+    private val timeout: Long = 5,
     private val defaultErrorVersion: String? = "0",
 
     ) {
@@ -19,38 +20,35 @@ class AppVersionOnGooglePlayUtils(
 
     fun getVersionOnGooglePlay(versionCallback: (version: String) -> Unit) {
 
-        val url =
-            "https://play.google.com/store/apps/details?id=$packName&hl=en"
+        val url = "https://play.google.com/store/apps/details?id=$packName&hl=en"
 
 
-        val client = OkHttpClient.Builder().readTimeout(5, TimeUnit.SECONDS).build()
-        val request =
-            Request.Builder().url(url).build()
+        val client = OkHttpClient.Builder().readTimeout(timeout, TimeUnit.SECONDS).build()
+        val request = Request.Builder().url(url).build()
 
         val call = client.newCall(request)
-        call.enqueue(
-            object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
+        call.enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                versionCallback.invoke(defaultErrorVersion!!)
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    val str = response.body!!.string()
+                    val version = parseVersion(str)
+//                        Log.d("MainActivity", "version： $version")
+                    if (version == defaultErrorVersion) {
+                        versionCallback.invoke(defaultErrorVersion!!)
+                    } else {
+                        versionCallback.invoke(version!!)
+                    }
+
+                } else {
                     versionCallback.invoke(defaultErrorVersion!!)
                 }
-
-                @Throws(IOException::class)
-                override fun onResponse(call: Call, response: Response) {
-                    if (response.isSuccessful) {
-                        val str = response.body!!.string()
-                        val version = parseVersion(str)
-//                        Log.d("MainActivity", "version： $version")
-                        if (version == defaultErrorVersion) {
-                            versionCallback.invoke(defaultErrorVersion!!)
-                        } else {
-                            versionCallback.invoke(version!!)
-                        }
-
-                    } else {
-                        versionCallback.invoke(defaultErrorVersion!!)
-                    }
-                }
-            })
+            }
+        })
     }
 
     private fun parseVersion(string: String): String? {
@@ -86,8 +84,7 @@ class AppVersionOnGooglePlayUtils(
 //    }
 
     fun getLocalVersionName(): String {
-        val packageInfo: PackageInfo = context.packageManager
-            .getPackageInfo(context.packageName, 0)
+        val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         return packageInfo.versionName
 
 //        return BuildConfig.VERSION_NAME
